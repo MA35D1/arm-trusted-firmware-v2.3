@@ -70,10 +70,10 @@ static console_t ma35d1_console = {
 void ma35d1_i2c0_init(unsigned int sys_clk);
 
 /* CPU-PLL: 1000MHz 800MHz 700MHz */
-static unsigned int CAPLL_MODE0[3][3] = {
-	{ 0x0000307D, 0x00000010, 0x00000000 },	/* 1000 MHz */
-	{ 0x00003064, 0x00000010, 0x00000000 },	/* 800 MHz */
-	{ 0x000060AF, 0x00000010, 0x00000000 },	/* 700 MHz */
+static unsigned int CAPLL_MODE0[3] = {
+	0x000006FA,	/* 1000 MHz */
+	0x00000364,	/* 800 MHz */
+	0x000006AF,	/* 700 MHz */
 };
 
 static void *fdt = (void *)(uintptr_t)MA35D1_DTB_BASE;
@@ -116,18 +116,24 @@ static void ma35d1_clock_setup(void)
 	/* CA-PLL */
 	clock = (pllfreq[0] < speed)? speed : pllfreq[0];
 	switch (clock) {
-		case 1000000000:
-		case 800000000:
+		case 1000000000: /* 1.302V */
 			/* set the voltage VDD_CPU first */
-			if (ma35d1_set_pmic(VOL_CPU, VOL_1_29)) {
-				if (clock == 1000000000)
-					index = 0;
-				else
-					index = 1;
+			if (ma35d1_set_pmic(VOL_CPU, VOL_1_30)) {
+				index = 0;
 				INFO("CA-PLL is %d Hz\n", clock);
 			} else {
 				index = 2;
 				WARN("Set 1GHz fail, try to set 700MHz.\n");
+			}
+			break;
+		case 800000000: /* 1.248V */
+			/* set the voltage VDD_CPU first */
+			if (ma35d1_set_pmic(VOL_CPU, VOL_1_25)) {
+				index = 1;
+				INFO("CA-PLL is %d Hz\n", clock);
+			} else {
+				index = 2;
+				WARN("Set 800MHz fail, try to set 700MHz.\n");
 			}
 			break;
 		case 700000000:
@@ -141,9 +147,7 @@ static void ma35d1_clock_setup(void)
 	/* set CA35 to E-PLL */
 	outp32((void *)CLK_CLKSEL0, (inp32((void *)CLK_CLKSEL0) & ~0x3) | 0x2);
 
-	outp32((void *)CLK_PLL0CTL0, CAPLL_MODE0[index][0]);
-	outp32((void *)CLK_PLL0CTL1, CAPLL_MODE0[index][1]);
-	outp32((void *)CLK_PLL0CTL2, CAPLL_MODE0[index][2]);
+	outp32((void *)CLK_PLL0CTL0, CAPLL_MODE0[index]);
 
 	/* check PLL stable */
 	while(1) {
