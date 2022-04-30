@@ -255,7 +255,7 @@ void plat_ma35d1_init(void)
 	}
 
 	/* enable CRYPTO */
-	if ((inp32((void *)SYS_CHIPCFG) & 0x100) == 0x0) {
+	if ((inp32((void *)SYS_CHIPCFG) & 0x100) == 0x100) {
 		/* un-lock */
 		do {
 			outp32((void *)(TSI_SYS_BASE+0x100), 0x59);

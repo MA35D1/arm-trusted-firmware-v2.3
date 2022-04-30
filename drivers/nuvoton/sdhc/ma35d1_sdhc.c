@@ -682,14 +682,14 @@ static struct io_block_dev_spec sdhc_dev_spec = {
 int ma35d1_sdhc_init(struct io_block_dev_spec **block_dev_spec, long *offset, int sdhc)
 {
 	if (sdhc == 0) {
-		mmio_write_32(CLK_CLKSEL0, mmio_read_32(CLK_CLKSEL0) | 0x30000); /* system pll */
+		mmio_write_32(CLK_CLKSEL0, mmio_read_32(CLK_CLKSEL0) &~0x30000); /* system pll */
 		mmio_write_32(CLK_SYSCLK0, mmio_read_32(CLK_SYSCLK0) | 0x10000); /* enable SD0 clock */
 		/* Set GPC for SD0 */
 		mmio_write_32(SYS_GPC_MFPL, 0x66666666);
 		mmio_write_32(SYS_GPC_MFPH, 0x00006666);
 		ma35d1_mmc.base = SDH0_BASE;
 	} else {
-		mmio_write_32(CLK_CLKSEL0, mmio_read_32(CLK_CLKSEL0) | 0xC0000); /* system pll */
+		mmio_write_32(CLK_CLKSEL0, mmio_read_32(CLK_CLKSEL0) &~0xC0000); /* system pll */
 		mmio_write_32(CLK_SYSCLK0, mmio_read_32(CLK_SYSCLK0) | 0x20000); /* enable SD1 clock */
 		/* Set GPJ for SD1 */
 		mmio_write_32(SYS_GPJ_MFPL, 0x66666666);
