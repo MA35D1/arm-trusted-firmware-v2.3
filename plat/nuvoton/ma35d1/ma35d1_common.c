@@ -118,23 +118,19 @@ static void ma35d1_clock_setup(void)
 	switch (clock) {
 		case 1000000000: /* 1.302V */
 			/* set the voltage VDD_CPU first */
-			if (ma35d1_set_pmic(VOL_CPU, VOL_1_30)) {
-				index = 0;
+			if (ma35d1_set_pmic(VOL_CPU, VOL_1_30))
 				INFO("CA-PLL is %d Hz\n", clock);
-			} else {
-				index = 2;
-				WARN("Set 1GHz fail, try to set 700MHz.\n");
-			}
+			else
+				WARN("Set 1GHz fail, Check PSCI setting.\n");
+			index = 0;
 			break;
 		case 800000000: /* 1.248V */
 			/* set the voltage VDD_CPU first */
-			if (ma35d1_set_pmic(VOL_CPU, VOL_1_25)) {
-				index = 1;
+			if (ma35d1_set_pmic(VOL_CPU, VOL_1_25))
 				INFO("CA-PLL is %d Hz\n", clock);
-			} else {
-				index = 2;
-				WARN("Set 800MHz fail, try to set 700MHz.\n");
-			}
+			else
+				WARN("Set 800MHz fail, Check PSCI setting.\n");
+			index = 1;
 			break;
 		case 700000000:
 			index = 2;
@@ -321,6 +317,9 @@ void plat_ma35d1_init(void)
 
 	/* enable WDT1/WDT2 reset */
 	outp32((void *)(SYS_BA+14), 0x70000);
+
+	/* Disable M4 Core reset*/
+	outp32((void *)(SYS_BA+20), inp32((void *)(SYS_BA+20)) & ~0x8);
 
 	/* lock */
 	outp32((void *)SYS_RLKTZS, 0);
