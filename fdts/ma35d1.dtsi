@@ -71,14 +71,14 @@
 
 	sdhci0: sdhci@40180000 {
 		compatible = "snps,dwcmshc-sdhci0";
-
+		bus-width = <4>;
 		/* sdhc information */
 		mmc-image-offset = <0xc0000>;
 	};
 
 	sdhci1: sdhci@40190000 {
 		compatible = "snps,dwcmshc-sdhci1";
-
+		bus-width = <4>;
 		/* sdhc information */
 		mmc-image-offset = <0xc0000>;
 	};
