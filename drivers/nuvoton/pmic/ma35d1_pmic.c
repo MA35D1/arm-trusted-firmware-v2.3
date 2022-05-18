@@ -114,7 +114,7 @@ void I2C_MasterTx(unsigned int u32Status)
 
 unsigned int ma35d1_write_i2c_data(unsigned int u32Addr, unsigned int u32Data)
 {
-	unsigned int I2C_TIME_OUT_COUNT = 0x20000;
+	unsigned int I2C_TIME_OUT_COUNT = 6000;
 	unsigned int u32Status;
 	unsigned int u32time_out = 0;
 
@@ -132,7 +132,6 @@ unsigned int ma35d1_write_i2c_data(unsigned int u32Addr, unsigned int u32Data)
 
 	while(1) {
 		if (mmio_read_32(REG_I2C0_CTL) & I2C_CTL_SI) {
-			u32time_out = 0;
 			u32Status = mmio_read_32(REG_I2C0_STATUS);
 			I2C_MasterTx(u32Status);
 		}
@@ -142,7 +141,6 @@ unsigned int ma35d1_write_i2c_data(unsigned int u32Addr, unsigned int u32Data)
 		}
 		u32time_out++;
 		if (u32time_out > I2C_TIME_OUT_COUNT) {
-			ERROR("i2c Write Time Out!\n");
 			return 0; // error
 		}
 	}
@@ -151,7 +149,7 @@ unsigned int ma35d1_write_i2c_data(unsigned int u32Addr, unsigned int u32Data)
 
 unsigned int ma35d1_read_i2c_data(unsigned int u32Addr, unsigned int* u32Data)
 {
-	unsigned int I2C_TIME_OUT_COUNT = 0x200000;
+	unsigned int I2C_TIME_OUT_COUNT = 6000;
 	unsigned int u32Status;
 	unsigned int u32time_out = 0;
 
@@ -168,7 +166,6 @@ unsigned int ma35d1_read_i2c_data(unsigned int u32Addr, unsigned int* u32Data)
 
 	while(1) {
 		if (mmio_read_32(REG_I2C0_CTL) & I2C_CTL_SI) {
-			u32time_out = 0;
 			u32Status = mmio_read_32(REG_I2C0_STATUS);
 			I2C_MasterRx(u32Status);
 		}
@@ -179,7 +176,6 @@ unsigned int ma35d1_read_i2c_data(unsigned int u32Addr, unsigned int* u32Data)
 
 		u32time_out++;
 		if (u32time_out > I2C_TIME_OUT_COUNT) {
-			ERROR("i2c Read Time Out!\n");
 			return 1; // error
 		}
 	}
@@ -190,7 +186,7 @@ unsigned int ma35d1_read_i2c_data(unsigned int u32Addr, unsigned int* u32Data)
 
 unsigned int ma35d1_read_pmic_data(unsigned int u32Addr, unsigned int* u32Data)
 {
-	unsigned int j = RETRY_COUNT;
+	int j = RETRY_COUNT;
 
 	while(j-- > 0) {
 		if (ma35d1_read_i2c_data(u32Addr, u32Data) == 2) {
@@ -199,7 +195,7 @@ unsigned int ma35d1_read_pmic_data(unsigned int u32Addr, unsigned int* u32Data)
 	}
 
 	if (j <= 0) {
-		ERROR("\n READ ERROR! \n");
+		//WARN("\n READ PMIC DATA ERROR! \n");
 		return 0;
 	}
 	
@@ -208,7 +204,7 @@ unsigned int ma35d1_read_pmic_data(unsigned int u32Addr, unsigned int* u32Data)
 
 unsigned int ma35d1_write_pmic_data(unsigned int u32Addr, unsigned int u32Data)
 {
-	unsigned int j = RETRY_COUNT;
+	int j = RETRY_COUNT;
 
 	while (j-- > 0) {
 		if (ma35d1_write_i2c_data(u32Addr, u32Data) == 1) {
@@ -217,7 +213,7 @@ unsigned int ma35d1_write_pmic_data(unsigned int u32Addr, unsigned int u32Data)
 	}
 
 	if (j <= 0) {
-		ERROR("\n WRITE ERROR [%d]! \n", j);
+		//WARN("\n WRITE PMIC DATA ERROR [%d]! \n", j);
 		return 0;
 	}
 

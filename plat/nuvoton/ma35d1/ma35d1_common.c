@@ -121,13 +121,17 @@ static void ma35d1_clock_setup(void)
 			if (ma35d1_set_pmic(VOL_CPU, VOL_1_30))
 				INFO("CA-PLL is %d Hz\n", clock);
 			else
-				WARN("Set 1GHz fail, Check PSCI setting.\n");
+				WARN("CA-PLL is %d Hz without PSCI setting.\n", clock);
 			index = 0;
 			break;
 		case 800000000: /* 1.248V */
-			index = 1;
-			INFO("CA-PLL is %d Hz\n", clock);
+			/* set the voltage VDD_CPU first */
+			if (ma35d1_set_pmic(VOL_CPU, VOL_1_25))
+				INFO("CA-PLL is %d Hz\n", clock);
+			else
+				WARN("CA-PLL is %d Hz without PSCI setting.\n", clock);
 			break;
+			index = 1;
 		case 700000000:
 			index = 2;
 			INFO("CA-PLL is %d Hz\n", clock);
