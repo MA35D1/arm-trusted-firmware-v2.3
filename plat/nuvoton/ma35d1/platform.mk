@@ -81,6 +81,7 @@ DTB_FILE_NAME		?=	\
 				ma35d1-cpu800-wb-128m.dtb \
 				ma35d1-cpu800-wb-256m.dtb \
 				ma35d1-cpu800-wb-512m.dtb \
+				ma35d1-cpu700-wb-512m.dtb \
 				\
 				ma35d1-cpu800-issi-1g.dtb \
 				ma35d1-cpu800-mc-1g.dtb \
