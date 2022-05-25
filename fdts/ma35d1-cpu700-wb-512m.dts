@@ -22,12 +22,12 @@
 };
 
 &clk {
-        assigned-clocks = <&clk capll>, <&clk syspll>,
-                                <&clk ddrpll>, <&clk apll>,
-                                <&clk epll>, <&clk vpll>;
-        assigned-clock-rates =<7000000000>, <180000000>,
-                                <266000000>, <200000000>,
-                                <500000000>, <150000000>;
-        clock-pll-mode = <0>, <0>, <1>, <0>, <0>, <0>;
+	assigned-clocks = <&clk capll>, <&clk syspll>,
+				<&clk ddrpll>, <&clk apll>,
+				<&clk epll>, <&clk vpll>;
+	assigned-clock-rates =<700000000>, <180000000>,
+				<266000000>, <200000000>,
+				<500000000>, <150000000>;
+	clock-pll-mode = <0>, <0>, <1>, <0>, <0>, <0>;
 };
 
